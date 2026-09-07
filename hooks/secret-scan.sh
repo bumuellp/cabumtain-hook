@@ -19,9 +19,9 @@ fi
 # Detect CI vs Local environment
 if [ "${CI:-}" = "true" ] || [ "${GITHUB_ACTIONS:-}" = "true" ]; then
 	echo "Running TruffleHog secrets scan in CI..."
-	"$TRUFFLEHOG_CMD" git file://. --since-commit HEAD --fail
+	"$TRUFFLEHOG_CMD" git file://. --since-commit HEAD --fail --no-update
 else
 	# Fast local offline check against staged changes
 	echo "Running TruffleHog secrets scan on staged changes..."
-	"$TRUFFLEHOG_CMD" git file://. --since-commit HEAD --fail --no-verification
+	"$TRUFFLEHOG_CMD" git file://. --since-commit HEAD --fail --no-verification --no-update
 fi
