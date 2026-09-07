@@ -1,3 +1,4 @@
+---
 - id: commit-msg
   name: Conventional Commit Message Validator
   description: Validates that commit messages follow Conventional Commits (feat, fix, docs, chore, etc.) with a 72-char limit.
