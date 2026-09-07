@@ -20,8 +20,8 @@ for file_path in $files; do
 	esac
 done
 
-# If no k8s files staged and no overlays exist, skip
-[ -z "$k8s_files" ] && [ ! -d "k8s/overlays/production" ] && exit 0
+# Skip if no k8s files were changed or staged
+[ -z "$k8s_files" ] && exit 0
 
 KUBECONFORM_CMD="kubeconform"
 if ! command -v kubeconform >/dev/null 2>&1; then
@@ -60,17 +60,20 @@ if [ -f ".k8s-version" ]; then
 fi
 
 SCHEMA_CRD="https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
+CACHE_DIR=".cache/kubeconform"
+mkdir -p "$CACHE_DIR"
 
+# Validate the FULL rendered production overlay (The Whole Picture)
 if [ -n "$KUSTOMIZE_CMD" ] && [ -d "k8s/overlays/production" ]; then
 	echo "Running Kustomize render + Kubeconform schema validation ($K8S_VER)..."
-	"$KUSTOMIZE_CMD" build k8s/overlays/production | "$KUBECONFORM_CMD" -summary -kubernetes-version "$K8S_VER" -schema-location default -schema-location "$SCHEMA_CRD" -ignore-missing-schemas -
+	"$KUSTOMIZE_CMD" build k8s/overlays/production | "$KUBECONFORM_CMD" -summary -cache "$CACHE_DIR" -kubernetes-version "$K8S_VER" -schema-location default -schema-location "$SCHEMA_CRD" -ignore-missing-schemas -
 
 	echo "Running Kube-score best-practice audit on rendered production manifests ($K8S_MIN)..."
 	"$KUSTOMIZE_CMD" build k8s/overlays/production | "$KUBESCORE_CMD" score --kubernetes-version "$K8S_MIN" -
 elif [ -n "$k8s_files" ]; then
 	echo "Running Kubeconform schema validation on staged files ($K8S_VER)..."
 	# shellcheck disable=SC2086
-	"$KUBECONFORM_CMD" -summary -kubernetes-version "$K8S_VER" -schema-location default -schema-location "$SCHEMA_CRD" -ignore-missing-schemas $k8s_files
+	"$KUBECONFORM_CMD" -summary -cache "$CACHE_DIR" -kubernetes-version "$K8S_VER" -schema-location default -schema-location "$SCHEMA_CRD" -ignore-missing-schemas $k8s_files
 
 	echo "Running Kube-score best-practice audit on staged manifests ($K8S_MIN)..."
 	# shellcheck disable=SC2086
