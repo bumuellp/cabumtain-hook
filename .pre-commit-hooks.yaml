@@ -1,0 +1,67 @@
+- id: commit-msg
+  name: Conventional Commit Message Validator
+  description: Validates that commit messages follow Conventional Commits (feat, fix, docs, chore, etc.) with a 72-char limit.
+  entry: hooks/commit-msg.sh
+  language: script
+  stages: [commit-msg]
+
+- id: pre-commit-all
+  name: Cabumtain Pre-Commit All Suite
+  description: Executes all modular checks in sequence.
+  entry: hooks/run-all.sh
+  language: script
+  pass_filenames: false
+  always_run: true
+
+- id: secret-scan
+  name: Secrets Scanner (TruffleHog)
+  description: Scans repository and staged changes for leaked credentials and API tokens.
+  entry: hooks/secret-scan.sh
+  language: script
+  pass_filenames: false
+  always_run: true
+
+- id: shell-lint
+  name: Shell Lint (shfmt & shellcheck)
+  description: Formats with shfmt and lints with shellcheck.
+  entry: hooks/shell-lint.sh
+  language: script
+  types: [shell]
+
+- id: ansible-lint
+  name: Ansible Syntax & Lint
+  description: Validates Ansible playbooks syntax and runs ansible-lint.
+  entry: hooks/ansible-lint.sh
+  language: script
+  pass_filenames: false
+  files: (^|/)ansible/.*\.(ya?ml)$
+
+- id: yaml-xml-lint
+  name: YAML & XML Lint
+  description: Lints YAML (yamllint, skipping SOPS .enc.yml) and XML files.
+  entry: hooks/yaml-xml-lint.sh
+  language: script
+  files: \.(ya?ml|xml)$
+
+- id: python-tests
+  name: Python Unit Tests
+  description: Runs pytest or unittest discovery when tests directory is present.
+  entry: hooks/python-tests.sh
+  language: script
+  pass_filenames: false
+  files: \.py$
+
+- id: k8s-validate
+  name: Kubernetes Manifest Validation
+  description: Validates Kubernetes manifests with Kustomize, Kubeconform, and Kube-score.
+  entry: hooks/k8s-validate.sh
+  language: script
+  files: (^|/)k8s/.*\.(ya?ml)$
+
+- id: trivy-security
+  name: Trivy Security Scan
+  description: Runs Trivy configuration and security scans on container and infra definitions.
+  entry: hooks/trivy-security.sh
+  language: script
+  pass_filenames: false
+  files: (^k8s/|Dockerfile|\.dockerfile|homelab-podman/)

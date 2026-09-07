@@ -1,0 +1,46 @@
+# Dogfooding & self-testing for cabumtain-hook repository
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-executables-have-shebangs
+
+  # Official validator for .pre-commit-hooks.yaml manifest
+  - repo: https://github.com/pre-commit/pre-commit
+    rev: v4.6.0
+    hooks:
+      - id: validate_manifest
+
+  - repo: local
+    hooks:
+      # Validates .pre-commit-config.yaml
+      - id: validate-config
+        name: Validate Pre-Commit Config
+        entry: pre-commit validate-config
+        language: system
+        files: ^\.pre-commit-config\.yaml$
+        pass_filenames: false
+
+      - id: secret-scan
+        name: Secrets Scanner (TruffleHog)
+        entry: hooks/secret-scan.sh
+        language: script
+        pass_filenames: false
+        always_run: true
+
+      - id: commit-msg
+        name: Validate Commit Message (Local)
+        entry: hooks/commit-msg.sh
+        language: script
+        stages: [commit-msg]
+
+      - id: shell-lint
+        name: Shell Lint (Local)
+        entry: hooks/shell-lint.sh
+        language: script
+        types: [shell]
