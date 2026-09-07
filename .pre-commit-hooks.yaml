@@ -66,3 +66,11 @@
   language: script
   pass_filenames: false
   files: (^k8s/|Dockerfile|\.dockerfile|homelab-podman/)
+
+- id: tag-immutability-guard
+  name: Tag Immutability Guard (Pre-Push)
+  description: Prevents force-pushing or mutating existing SemVer release tags (v*.*.*) on remote.
+  entry: hooks/tag-immutability-guard.sh
+  language: script
+  stages: [pre-push]
+  pass_filenames: false
