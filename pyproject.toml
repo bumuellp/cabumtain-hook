@@ -1,0 +1,20 @@
+[project]
+name = "cabumtain-hook"
+version = "1.0.2"
+description = "Modular git pre-commit and pre-push hook collection"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pyyaml>=6.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

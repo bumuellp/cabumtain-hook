@@ -74,3 +74,11 @@
   language: script
   stages: [pre-push]
   pass_filenames: false
+
+- id: act-integration-test
+  name: Local GitHub Actions Integration Tests (act)
+  description: Executes local workflow integration tests using act with Docker prior to pushing.
+  entry: hooks/act-integration-test.sh
+  language: script
+  stages: [pre-push, manual]
+  pass_filenames: false
