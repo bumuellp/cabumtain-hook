@@ -59,13 +59,32 @@
   language: script
   files: (^|/)k8s/.*\.(ya?ml)$
 
-- id: trivy-security
-  name: Trivy Security Scan
-  description: Runs Trivy configuration and security scans on container and infra definitions.
-  entry: hooks/trivy-security.sh
+- id: trivy-config
+  name: Trivy IaC & Configuration Scan
+  description: Scans Dockerfiles, Kubernetes manifests, and infra definitions for security misconfigurations.
+  entry: hooks/trivy.sh
+  args: [--mode=config]
   language: script
   pass_filenames: false
-  files: (^k8s/|Dockerfile|\.dockerfile|homelab-podman/)
+  files: (^|/)(k8s/|Dockerfile|\.dockerfile|homelab-podman/|.*\.tf$)
+
+- id: trivy-fs
+  name: Trivy Filesystem, CVE & License Scan
+  description: Scans project source code, dependencies, and lockfiles for vulnerabilities, leaked secrets, and license compliance.
+  entry: hooks/trivy.sh
+  args: [--mode=fs]
+  language: script
+  pass_filenames: false
+  exclude: (\.(md|markdown|txt|rst|adoc|png|jpg|jpeg|gif|svg|ico|pdf|drawio)|LICENSE|\.gitignore)$
+
+- id: trivy-security
+  name: Trivy Security Scan (Legacy Alias)
+  description: Runs Trivy configuration and security scans on container and infra definitions (alias for trivy-config).
+  entry: hooks/trivy.sh
+  args: [--mode=config]
+  language: script
+  pass_filenames: false
+  files: (^|/)(k8s/|Dockerfile|\.dockerfile|homelab-podman/)
 
 - id: tag-immutability-guard
   name: Tag Immutability Guard (Pre-Push)

@@ -15,7 +15,9 @@ Modular, production-grade Git and `pre-commit` hooks for linting, secrets scanni
 | **`python-tests`** | `commit` | Runs Python unit tests (`pytest` via `uv` or `.venv`) if `tests/` exists. | `uv` / `pytest` / `python3` |
 | **`ansible-lint`** | `commit` | Validates Ansible playbook syntax and runs `ansible-lint`. | `ansible-lint` |
 | **`k8s-validate`** | `commit` | Kubernetes manifest validation using Kustomize, Kubeconform, and Kube-score. | `kustomize`, `kubeconform`, `kube-score` |
-| **`trivy-security`** | `commit` | Trivy configuration and security vulnerability scan on manifests and Dockerfiles. | `trivy` |
+| **`trivy-config`** | `commit` | Scans Dockerfiles, Kubernetes manifests, and IaC for security misconfigurations. | `trivy` |
+| **`trivy-fs`** | `commit` | Scans filesystem dependencies, lockfiles, and code for CVEs, secrets, and licenses. | `trivy` |
+| **`trivy-security`** | `commit` | Legacy alias for `trivy-config`. | `trivy` |
 | **`tag-immutability-guard`** | `pre-push` | Prevents mutating or deleting existing remote SemVer release tags (`v*.*.*`). | `git`, bash |
 | **`act-integration-test`** | `pre-push`, `manual` | Runs local GitHub Actions workflow integration tests with `act` before push. | `act` (or `gh act`), Docker |
 | **`pre-commit-all`** | `commit` | Sequential runner executing all modular checks. | POSIX shell |
@@ -41,14 +43,15 @@ repos:
 
   # Cabumtain shared hooks (pin to immutable release tag)
   - repo: https://github.com/bumuellp/cabumtain-hook
-    rev: v1.0.2
+    rev: v1.2.0
     hooks:
       - id: commit-msg
       - id: secret-scan
       - id: shell-lint
       - id: yaml-xml-lint
       - id: python-tests
-      - id: trivy-security
+      - id: trivy-config
+      - id: trivy-fs
       # Pre-Push Guards:
       - id: tag-immutability-guard
       - id: act-integration-test
