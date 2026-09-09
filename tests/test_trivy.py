@@ -1,9 +1,8 @@
 """Unit tests for Trivy scanning hook (hooks/trivy.sh)."""
 
 import os
-from pathlib import Path
 import subprocess
-import pytest
+from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 TRIVY_SCRIPT = REPO_ROOT / "hooks" / "trivy.sh"

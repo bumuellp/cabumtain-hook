@@ -1,7 +1,7 @@
 """Unit tests for .pre-commit-hooks.yaml manifest validity."""
 
 from pathlib import Path
-import pytest
+
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -13,7 +13,7 @@ def test_manifest_exists():
 
 
 def test_all_declared_hooks_valid():
-    with open(MANIFEST_FILE, "r", encoding="utf-8") as f:
+    with open(MANIFEST_FILE, encoding="utf-8") as f:
         hooks = yaml.safe_load(f)
 
     assert isinstance(hooks, list) and len(hooks) > 0, "Manifest must declare a list of hooks"
@@ -26,6 +26,11 @@ def test_all_declared_hooks_valid():
         assert hook.get("entry"), f"Hook {hook_id} missing entry"
 
         entry_script = REPO_ROOT / hook["entry"]
-        assert entry_script.is_file(), f"Hook script {hook['entry']} for '{hook_id}' does not exist on disk"
+        assert entry_script.is_file(), (
+            f"Hook script {hook['entry']} for '{hook_id}' does not exist on disk"
+        )
         import os
-        assert os.access(entry_script, os.X_OK), f"Hook script {hook['entry']} for '{hook_id}' must be executable"
+
+        assert os.access(entry_script, os.X_OK), (
+            f"Hook script {hook['entry']} for '{hook_id}' must be executable"
+        )

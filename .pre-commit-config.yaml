@@ -17,6 +17,13 @@ repos:
     hooks:
       - id: validate_manifest
 
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.9
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
   - repo: local
     hooks:
       # Validates .pre-commit-config.yaml

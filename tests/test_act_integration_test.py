@@ -1,9 +1,8 @@
 """Unit tests for act-integration-test.sh hook failure modes and guards."""
 
 import os
-from pathlib import Path
 import subprocess
-import pytest
+from pathlib import Path
 
 HOOK_PATH = Path(__file__).resolve().parent.parent / "hooks" / "act-integration-test.sh"
 
@@ -16,7 +15,9 @@ def test_act_integration_test_hook_exists():
 def test_act_skips_in_github_actions_ci():
     """Hook must immediately exit 0 when executing inside GitHub Actions CI."""
     env = {"GITHUB_ACTIONS": "true", "PATH": os.environ.get("PATH", "")}
-    res = subprocess.run(["bash", str(HOOK_PATH)], capture_output=True, text=True, check=False, env=env)
+    res = subprocess.run(
+        ["bash", str(HOOK_PATH)], capture_output=True, text=True, check=False, env=env
+    )
     assert res.returncode == 0
     assert "Skipping local act runner" in res.stdout
 
@@ -31,7 +32,9 @@ def test_act_fails_when_act_binary_missing(tmp_path):
         "GITHUB_ACTIONS": "false",
         "PATH": f"{mock_bin}:/bin:/usr/bin",
     }
-    res = subprocess.run(["bash", str(HOOK_PATH)], capture_output=True, text=True, check=False, env=env, cwd=tmp_path)
+    res = subprocess.run(
+        ["bash", str(HOOK_PATH)], capture_output=True, text=True, check=False, env=env, cwd=tmp_path
+    )
     assert res.returncode == 1
     assert "act' is required for pre-push integration testing" in res.stderr
 
@@ -55,7 +58,9 @@ def test_act_fails_when_docker_daemon_unavailable(tmp_path):
         "GITHUB_ACTIONS": "false",
         "PATH": f"{mock_bin}:{os.environ.get('PATH', '')}",
     }
-    res = subprocess.run(["bash", str(HOOK_PATH)], capture_output=True, text=True, check=False, env=env, cwd=tmp_path)
+    res = subprocess.run(
+        ["bash", str(HOOK_PATH)], capture_output=True, text=True, check=False, env=env, cwd=tmp_path
+    )
     assert res.returncode == 1
     assert "Docker daemon is not running or inaccessible" in res.stderr
 
@@ -78,7 +83,9 @@ def test_act_fails_when_no_workflow_found(tmp_path):
         "GITHUB_ACTIONS": "false",
         "PATH": f"{mock_bin}:{os.environ.get('PATH', '')}",
     }
-    res = subprocess.run(["bash", str(HOOK_PATH)], capture_output=True, text=True, check=False, env=env, cwd=tmp_path)
+    res = subprocess.run(
+        ["bash", str(HOOK_PATH)], capture_output=True, text=True, check=False, env=env, cwd=tmp_path
+    )
     assert res.returncode == 1
     assert "No integration test workflow found" in res.stderr
 
@@ -109,7 +116,9 @@ exit 0
         "GITHUB_ACTIONS": "false",
         "PATH": f"{mock_bin}:{os.environ.get('PATH', '')}",
     }
-    res = subprocess.run(["bash", str(HOOK_PATH)], capture_output=True, text=True, check=False, env=env, cwd=tmp_path)
+    res = subprocess.run(
+        ["bash", str(HOOK_PATH)], capture_output=True, text=True, check=False, env=env, cwd=tmp_path
+    )
     assert res.returncode == 0
     assert "-W .github/workflows/integration-tests.yml" in log_file.read_text()
 
@@ -136,6 +145,13 @@ exit 0
         "PATH": f"{mock_bin}:{os.environ.get('PATH', '')}",
     }
     custom_args = ["-W", ".github/workflows/custom.yml", "-j", "my-job"]
-    res = subprocess.run(["bash", str(HOOK_PATH)] + custom_args, capture_output=True, text=True, check=False, env=env, cwd=tmp_path)
+    res = subprocess.run(
+        ["bash", str(HOOK_PATH)] + custom_args,
+        capture_output=True,
+        text=True,
+        check=False,
+        env=env,
+        cwd=tmp_path,
+    )
     assert res.returncode == 0
     assert "ACT_ARGS: -W .github/workflows/custom.yml -j my-job" in log_file.read_text()
