@@ -1,6 +1,6 @@
 [project]
 name = "cabumtain-hook"
-version = "1.0.2"
+version = "1.3.0"
 description = "Modular git pre-commit and pre-push hook collection"
 readme = "README.md"
 requires-python = ">=3.11"

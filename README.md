@@ -43,7 +43,7 @@ repos:
 
   # Cabumtain shared hooks (pin to immutable release tag)
   - repo: https://github.com/bumuellp/cabumtain-hook
-    rev: v1.2.0
+    rev: v1.3.0
     hooks:
       - id: commit-msg
       - id: secret-scan
