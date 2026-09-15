@@ -2,6 +2,9 @@
 .cache/
 .pre-commit/
 .trivy/
+.agents/
+skills-lock.json
+.ruff_cache/
 
 # Python artifacts
 __pycache__/
