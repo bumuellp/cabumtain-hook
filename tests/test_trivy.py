@@ -1,6 +1,5 @@
-"""Unit tests for Trivy scanning hook (hooks/trivy.sh)."""
-
 import os
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -25,9 +24,14 @@ def test_trivy_unknown_mode():
 
 
 def test_trivy_missing_binary_fails_hard(tmp_path):
-    # Execute with an empty PATH to guarantee trivy is not found
+    # Ensure bash is available in a clean PATH where trivy is guaranteed absent
+    mock_bin = tmp_path / "bin"
+    mock_bin.mkdir()
+    bash_path = shutil.which("bash") or "/bin/bash"
+    os.symlink(bash_path, mock_bin / "bash")
+
     env = os.environ.copy()
-    env["PATH"] = str(tmp_path)
+    env["PATH"] = str(mock_bin)
     env["HOME"] = str(tmp_path)
 
     result = subprocess.run(

@@ -1,11 +1,11 @@
-#!/bin/sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
-if [ "$#" -gt 0 ]; then
-	files="$*"
-else
-	files="$(git diff --cached --name-only --diff-filter=ACMR 2>/dev/null || true)"
-fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/utils.sh"
+
+files="$(get_target_files "$@")"
 
 k8s_files=""
 for file_path in $files; do
@@ -23,32 +23,9 @@ done
 # Skip if no k8s files were changed or staged
 [ -z "$k8s_files" ] && exit 0
 
-KUBECONFORM_CMD="kubeconform"
-if ! command -v kubeconform >/dev/null 2>&1; then
-	if [ -x "$HOME/.local/bin/kubeconform" ]; then
-		KUBECONFORM_CMD="$HOME/.local/bin/kubeconform"
-	else
-		echo "ERROR: kubeconform is required for Kubernetes manifest schema validation." >&2
-		exit 1
-	fi
-fi
-
-KUBESCORE_CMD="kube-score"
-if ! command -v kube-score >/dev/null 2>&1; then
-	if [ -x "$HOME/.local/bin/kube-score" ]; then
-		KUBESCORE_CMD="$HOME/.local/bin/kube-score"
-	else
-		echo "ERROR: kube-score is required for Kubernetes best-practice audits." >&2
-		exit 1
-	fi
-fi
-
-KUSTOMIZE_CMD=""
-if command -v kustomize >/dev/null 2>&1; then
-	KUSTOMIZE_CMD="kustomize"
-elif [ -x "$HOME/.local/bin/kustomize" ]; then
-	KUSTOMIZE_CMD="$HOME/.local/bin/kustomize"
-fi
+KUBECONFORM_CMD="$(require_tool kubeconform 'kubeconform is required for Kubernetes manifest schema validation.')"
+KUBESCORE_CMD="$(require_tool kube-score 'kube-score is required for Kubernetes best-practice audits.')"
+KUSTOMIZE_CMD="$(find_tool kustomize || true)"
 
 K8S_VER="1.36.4"
 K8S_MIN="v1.36"

@@ -1,9 +1,13 @@
-#!/bin/sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
 # ==============================================================================
 # Unified Trivy Scanner Hook (IaC Config & Filesystem / License Scanning)
 # ==============================================================================
+
+SCRIPT_DIR="$(cd "${BASH_SOURCE[0]%/*}" && pwd)"
+# shellcheck source=hooks/utils.sh
+. "$SCRIPT_DIR/utils.sh"
 
 MODE="config"
 EXTRA_ARGS=""
@@ -35,17 +39,8 @@ while [ "$#" -gt 0 ]; do
 	esac
 done
 
-# Locate Trivy binary
-TRIVY_CMD="trivy"
-if ! command -v trivy >/dev/null 2>&1; then
-	if [ -x "$HOME/.local/bin/trivy" ]; then
-		TRIVY_CMD="$HOME/.local/bin/trivy"
-	else
-		echo "ERROR: trivy binary is not installed or not found in PATH." >&2
-		echo "       Install via: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b ~/.local/bin" >&2
-		exit 1
-	fi
-fi
+TRIVY_INSTALL_MSG=$(printf "trivy binary is not installed or not found in PATH.\n       Install via: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b ~/.local/bin")
+TRIVY_CMD="$(require_tool trivy "$TRIVY_INSTALL_MSG")"
 
 # Execute corresponding scan mode
 case "$MODE" in

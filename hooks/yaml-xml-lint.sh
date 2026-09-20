@@ -1,11 +1,11 @@
-#!/bin/sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
-if [ "$#" -gt 0 ]; then
-	files="$*"
-else
-	files="$(git diff --cached --name-only --diff-filter=ACMR 2>/dev/null || true)"
-fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/utils.sh"
+
+files="$(get_target_files "$@")"
 
 yaml_files=""
 xml_files=""
@@ -25,12 +25,7 @@ for file_path in $files; do
 done
 
 if [ -n "$yaml_files" ]; then
-	YAMLLINT_CMD=""
-	if command -v yamllint >/dev/null 2>&1; then
-		YAMLLINT_CMD="yamllint"
-	elif [ -x "$HOME/.local/bin/yamllint" ]; then
-		YAMLLINT_CMD="$HOME/.local/bin/yamllint"
-	fi
+	YAMLLINT_CMD="$(find_tool yamllint || true)"
 
 	if [ -n "$YAMLLINT_CMD" ]; then
 		if [ -f ".yamllint.yml" ] || [ -f ".yamllint.yaml" ] || [ -f ".yamllint" ]; then

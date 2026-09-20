@@ -80,3 +80,10 @@ repos:
         language: script
         stages: [pre-push]
         pass_filenames: false
+
+      - id: python-tests
+        name: Python Unit Tests (Local)
+        entry: hooks/python-tests.sh
+        language: script
+        pass_filenames: false
+        files: ^(hooks/.*|tests/.*|pyproject\.toml)$

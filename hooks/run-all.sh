@@ -1,5 +1,5 @@
-#!/bin/sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
 if [ "${OS:-}" = "Windows_NT" ]; then
 	echo "WARN: Skipping pre-commit lint checks on Windows due Git-for-Windows shell fork limitation." >&2

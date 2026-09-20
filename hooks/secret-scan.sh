@@ -1,20 +1,15 @@
-#!/bin/sh
-set -eu
+#!/usr/bin/env bash
+set -euo pipefail
 
 # ==============================================================================
 # Git Pre-Commit Hook: Secrets & Credential Scanner (TruffleHog)
 # ==============================================================================
 
-TRUFFLEHOG_CMD="trufflehog"
-if ! command -v trufflehog >/dev/null 2>&1; then
-	if [ -x "$HOME/.local/bin/trufflehog" ]; then
-		TRUFFLEHOG_CMD="$HOME/.local/bin/trufflehog"
-	else
-		echo "INFO: trufflehog not installed, skipping local secret scan." >&2
-		echo "      Install via: curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sh -s -- -b ~/.local/bin" >&2
-		exit 0
-	fi
-fi
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/utils.sh"
+
+TRUFFLEHOG_CMD="$(require_tool trufflehog 'trufflehog is required for secret and credential scanning. Install via: curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sh -s -- -b ~/.local/bin')"
 
 # Detect CI vs Local environment
 if [ "${CI:-}" = "true" ] || [ "${GITHUB_ACTIONS:-}" = "true" ]; then
