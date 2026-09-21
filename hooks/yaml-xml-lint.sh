@@ -5,36 +5,33 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
 . "$SCRIPT_DIR/utils.sh"
 
-files="$(get_target_files "$@")"
+yaml_files=()
+xml_files=()
 
-yaml_files=""
-xml_files=""
-
-for file_path in $files; do
+while IFS= read -r -d '' file_path; do
+	[ -z "$file_path" ] && continue
 	case "$file_path" in
 	*.enc.yml | *.enc.yaml)
 		# Skip encrypted SOPS secrets
 		;;
 	*.yml | *.yaml)
-		[ -f "$file_path" ] && yaml_files="$yaml_files $file_path"
+		[ -f "$file_path" ] && yaml_files+=("$file_path")
 		;;
 	*.xml)
-		[ -f "$file_path" ] && xml_files="$xml_files $file_path"
+		[ -f "$file_path" ] && xml_files+=("$file_path")
 		;;
 	esac
-done
+done < <(get_target_files "$@")
 
-if [ -n "$yaml_files" ]; then
+if [ "${#yaml_files[@]}" -gt 0 ]; then
 	YAMLLINT_CMD="$(find_tool yamllint || true)"
 
 	if [ -n "$YAMLLINT_CMD" ]; then
 		if [ -f ".yamllint.yml" ] || [ -f ".yamllint.yaml" ] || [ -f ".yamllint" ]; then
-			# shellcheck disable=SC2086
-			"$YAMLLINT_CMD" $yaml_files
+			"$YAMLLINT_CMD" "${yaml_files[@]}"
 		else
 			# Fallback to relaxed config if no custom config in repository
-			# shellcheck disable=SC2086
-			"$YAMLLINT_CMD" -d "{extends: relaxed, rules: {line-length: disable}}" $yaml_files
+			"$YAMLLINT_CMD" -d "{extends: relaxed, rules: {line-length: disable}}" "${yaml_files[@]}"
 		fi
 	else
 		echo "ERROR: yamllint is required to lint staged YAML files." >&2
@@ -42,14 +39,13 @@ if [ -n "$yaml_files" ]; then
 	fi
 fi
 
-if [ -n "$xml_files" ]; then
+if [ "${#xml_files[@]}" -gt 0 ]; then
 	if command -v xmllint >/dev/null 2>&1; then
-		for file_path in $xml_files; do
+		for file_path in "${xml_files[@]}"; do
 			xmllint --noout "$file_path"
 		done
 	elif command -v python3 >/dev/null 2>&1; then
-		# shellcheck disable=SC2086
-		python3 - $xml_files <<'PY'
+		python3 - "${xml_files[@]}" <<'PY'
 import sys
 import xml.etree.ElementTree as ET
 

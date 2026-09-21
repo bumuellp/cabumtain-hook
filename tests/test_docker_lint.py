@@ -63,3 +63,18 @@ def test_docker_lint_missing_tool_fails_hard(tmp_path):
     )
     assert result.returncode == 1
     assert "hadolint" in result.stderr.lower()
+
+
+def test_docker_lint_filename_with_spaces(tmp_path):
+    sub = tmp_path / "path with spaces"
+    sub.mkdir()
+    df = sub / "My Custom.dockerfile"
+    df.write_text('FROM debian:bookworm-slim\nUSER 1000:1000\nCMD ["echo", "hello"]\n')
+    result = subprocess.run(
+        [str(DOCKER_LINT_SCRIPT), str(df)],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0
+    assert "Hadolint" in result.stdout

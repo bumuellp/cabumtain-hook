@@ -42,8 +42,8 @@ require_tool() {
 
 get_target_files() {
 	if [ "$#" -gt 0 ]; then
-		echo "$*"
+		printf '%s\0' "$@"
 	else
-		git diff --cached --name-only --diff-filter=ACMR 2>/dev/null || true
+		git diff --cached -z --name-only --diff-filter=ACMR 2>/dev/null || true
 	fi
 }

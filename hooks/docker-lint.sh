@@ -8,8 +8,7 @@ SCRIPT_DIR="$(cd "${BASH_SOURCE[0]%/*}" && pwd)"
 # shellcheck source=hooks/utils.sh
 . "$SCRIPT_DIR/utils.sh"
 
-files="$(get_target_files "$@")"
-dockerfiles=""
+dockerfiles=()
 
 is_dockerfile() {
 	local file_path="$1"
@@ -24,35 +23,34 @@ is_dockerfile() {
 	return 1
 }
 
-for file_path in $files; do
+while IFS= read -r -d '' file_path; do
+	[ -z "$file_path" ] && continue
 	if [ -f "$file_path" ] && is_dockerfile "$file_path"; then
-		dockerfiles="$dockerfiles $file_path"
+		dockerfiles+=("$file_path")
 	fi
-done
+done < <(get_target_files "$@")
 
-[ -z "$dockerfiles" ] && exit 0
+[ "${#dockerfiles[@]}" -eq 0 ] && exit 0
 
 echo "=== Running Dockerfile Lint (Hadolint) ==="
 
 HADOLINT_CMD="$(find_tool hadolint || true)"
+CONTAINER_RUNTIME=""
+CONTAINER_IMAGE="docker.io/hadolint/hadolint:v2.12.0"
+
+if command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
+	CONTAINER_RUNTIME="docker"
+elif command -v podman >/dev/null 2>&1; then
+	CONTAINER_RUNTIME="podman"
+fi
 
 if [ -n "$HADOLINT_CMD" ]; then
-	# shellcheck disable=SC2086
-	"$HADOLINT_CMD" $dockerfiles
-elif command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
+	"$HADOLINT_CMD" "${dockerfiles[@]}"
+elif [ -n "$CONTAINER_RUNTIME" ]; then
 	status=0
-	for df in $dockerfiles; do
-		echo "  Linting via container: $df"
-		if ! docker run --rm -i hadolint/hadolint hadolint - <"$df"; then
-			status=1
-		fi
-	done
-	exit $status
-elif command -v podman >/dev/null 2>&1; then
-	status=0
-	for df in $dockerfiles; do
-		echo "  Linting via container: $df"
-		if ! podman run --rm -i docker.io/hadolint/hadolint hadolint - <"$df"; then
+	for df in "${dockerfiles[@]}"; do
+		echo "  Linting via container ($CONTAINER_RUNTIME): $df"
+		if ! "$CONTAINER_RUNTIME" run --rm -i "$CONTAINER_IMAGE" hadolint - <"$df"; then
 			status=1
 		fi
 	done

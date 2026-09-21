@@ -5,12 +5,10 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=hooks/utils.sh
 . "$SCRIPT_DIR/utils.sh"
 
-files="$(get_target_files "$@")"
-
-shell_files=""
+shell_files=()
 
 is_shell_script() {
-	file_path="$1"
+	local file_path="$1"
 	case "$file_path" in
 	*.sh | *.bash) return 0 ;;
 	esac
@@ -21,22 +19,21 @@ is_shell_script() {
 	return 1
 }
 
-for file_path in $files; do
+while IFS= read -r -d '' file_path; do
+	[ -z "$file_path" ] && continue
 	if [ -f "$file_path" ] && is_shell_script "$file_path"; then
-		shell_files="$shell_files $file_path"
+		shell_files+=("$file_path")
 	fi
-done
+done < <(get_target_files "$@")
 
-[ -z "$shell_files" ] && exit 0
+[ "${#shell_files[@]}" -eq 0 ] && exit 0
 
 SHFMT_CMD="$(find_tool shfmt || true)"
 if [ -n "$SHFMT_CMD" ]; then
-	# shellcheck disable=SC2086
-	"$SHFMT_CMD" -w $shell_files
+	"$SHFMT_CMD" -w "${shell_files[@]}"
 fi
 
 SHELLCHECK_CMD="$(find_tool shellcheck || true)"
 if [ -n "$SHELLCHECK_CMD" ]; then
-	# shellcheck disable=SC2086
-	"$SHELLCHECK_CMD" -x $shell_files
+	"$SHELLCHECK_CMD" -x "${shell_files[@]}"
 fi
