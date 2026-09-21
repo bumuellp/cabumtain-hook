@@ -44,6 +44,13 @@
   language: script
   files: \.(ya?ml|xml)$
 
+- id: docker-lint
+  name: Dockerfile Lint (Hadolint)
+  description: Validates Dockerfiles against Docker best practices and shell standards using Hadolint.
+  entry: hooks/docker-lint.sh
+  language: script
+  files: (^|/)(Dockerfile|\.dockerfile|Dockerfile\..*)$
+
 - id: python-tests
   name: Python Unit Tests
   description: Runs pytest or unittest discovery when tests directory is present.

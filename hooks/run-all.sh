@@ -12,6 +12,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 checks="
 secret-scan.sh
 shell-lint.sh
+docker-lint.sh
 ansible-lint.sh
 yaml-xml-lint.sh
 python-tests.sh
