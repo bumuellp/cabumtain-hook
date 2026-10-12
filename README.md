@@ -20,7 +20,9 @@ Modular, production-grade Git and `pre-commit` hooks for linting, secrets scanni
 | **`trivy-security`** | `commit` | Legacy alias for `trivy-config`. | `trivy` |
 | **`tag-immutability-guard`** | `pre-push` | Prevents mutating or deleting existing remote SemVer release tags (`v*.*.*`). | `git`, bash |
 | **`act-integration-test`** | `pre-push`, `manual` | Runs local GitHub Actions workflow integration tests with `act` before push. | `act` (or `gh act`), Docker |
+| **`tofu-fmt`** | `commit` | Formats OpenTofu & Terraform files using `tofu fmt` (or `terraform fmt`). | `tofu` / `terraform` |
 | **`pre-commit-all`** | `commit` | Sequential runner executing all modular checks. | POSIX shell |
+
 
 ---
 

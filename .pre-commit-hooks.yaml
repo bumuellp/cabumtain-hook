@@ -108,3 +108,10 @@
   language: script
   stages: [pre-push, manual]
   pass_filenames: false
+
+- id: tofu-fmt
+  name: OpenTofu & Terraform Format (tofu fmt)
+  description: Formats OpenTofu and Terraform files using tofu fmt (or terraform fmt fallback).
+  entry: hooks/tofu-fmt.sh
+  language: script
+  files: \.(tf|tofu|tfvars)$
