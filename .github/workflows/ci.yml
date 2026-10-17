@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Run Pre-Commit via Shared Action
-        uses: bumuellp/lights-camera-bum-action/pre-commit@main
+        uses: bumuellp/lights-camera-bum-action/pre-commit@8683da73a6af4654833b7c1baa887182c46ca624 # main
