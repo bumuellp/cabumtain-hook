@@ -1,0 +1,3 @@
+# Files that child repositories can modify without upstream template sync collisions
+README.md
+LICENSE
