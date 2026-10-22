@@ -115,3 +115,10 @@
   entry: hooks/tofu-fmt.sh
   language: script
   files: \.(tf|tofu|tfvars)$
+
+- id: rust-lint
+  name: Rust Format & Lint (cargo fmt & clippy)
+  description: Checks Rust code formatting with cargo fmt --check and lints with cargo clippy.
+  entry: hooks/rust-lint.sh
+  language: script
+  files: (\.rs$|Cargo\.(toml|lock)$)

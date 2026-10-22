@@ -18,6 +18,7 @@ yaml-xml-lint.sh
 python-tests.sh
 k8s-validate.sh
 trivy-security.sh
+rust-lint.sh
 "
 
 for check_script in $checks; do
