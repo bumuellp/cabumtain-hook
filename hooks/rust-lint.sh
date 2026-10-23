@@ -10,7 +10,7 @@ rust_files=()
 is_rust_file() {
 	local file_path="$1"
 	case "$file_path" in
-	*.rs | Cargo.toml | Cargo.lock) return 0 ;;
+	*.rs | Cargo.toml | Cargo.lock | */Cargo.toml | */Cargo.lock) return 0 ;;
 	esac
 	return 1
 }
@@ -70,14 +70,22 @@ elif [ -n "$RUSTFMT_CMD" ]; then
 	done
 fi
 
+# Check if cargo-clippy is available
+HAS_CLIPPY=false
+if [ -n "$CARGO_CMD" ] && "$CARGO_CMD" clippy --version >/dev/null 2>&1; then
+	HAS_CLIPPY=true
+fi
+
 # Run cargo clippy / cargo check for each discovered manifest
 if [ -n "$CARGO_CMD" ] && [ "${#cargo_manifests[@]}" -gt 0 ]; then
 	for manifest in "${!cargo_manifests[@]}"; do
 		if [ -f "$manifest" ]; then
-			log_info "Linting Rust crate: $manifest"
-			if ! "$CARGO_CMD" clippy --manifest-path "$manifest" --all-targets -- -D warnings 2>/dev/null; then
-				# Fallback if clippy component is not installed
-				"$CARGO_CMD" check --manifest-path "$manifest"
+			if [ "$HAS_CLIPPY" = "true" ]; then
+				log_info "Running cargo clippy on: $manifest"
+				"$CARGO_CMD" clippy --manifest-path "$manifest" --all-targets -- -D warnings
+			else
+				log_info "Running cargo check on: $manifest"
+				"$CARGO_CMD" check --manifest-path "$manifest" --all-targets
 			fi
 		fi
 	done
