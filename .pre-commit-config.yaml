@@ -1,89 +1,39 @@
 ---
 default_language_version:
-  node: 24.21.0
-# Dogfooding & self-testing for cabumtain-hook repository
+    node: 24.21.0
+
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
-    hooks:
-      - id: check-yaml
-      - id: end-of-file-fixer
-      - id: trailing-whitespace
-      - id: mixed-line-ending
-        args: [--fix=lf]
-      - id: check-executables-have-shebangs
+    - repo: https://github.com/pre-commit/pre-commit-hooks
+      rev: v5.0.0
+      hooks:
+          - id: trailing-whitespace
+          - id: end-of-file-fixer
+          - id: check-yaml
+          - id: check-json
+          - id: mixed-line-ending
+            args: [--fix=lf]
 
-  # Official validator for .pre-commit-hooks.yaml manifest
-  - repo: https://github.com/pre-commit/pre-commit
-    rev: v4.6.0
-    hooks:
-      - id: validate_manifest
+    - repo: https://github.com/python-jsonschema/check-jsonschema
+      rev: 0.31.2
+      hooks:
+          - id: check-github-workflows
 
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.9
-    hooks:
-      - id: ruff
-        args: [--fix]
-      - id: ruff-format
+    - repo: https://github.com/pre-commit/mirrors-prettier
+      rev: v4.0.0-alpha.8
+      hooks:
+          - id: prettier
+            types_or: [markdown, yaml, json]
 
-  - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 44.93.5
-    hooks:
-      - id: renovate-config-validator
-        files: ^(renovate-config\.json|\.github/renovate\.json)$
+    - repo: https://github.com/renovatebot/pre-commit-hooks
+      rev: 44.93.5
+      hooks:
+          - id: renovate-config-validator
+            files: ^(renovate-config\.json|\.github/renovate\.json)$
 
-  - repo: local
-    hooks:
-      - id: aislop
-        name: Catch AI Slop (aislop)
-        entry: aislop scan --staged
-        language: node
-        additional_dependencies: ['aislop@^0.16.1']
-        pass_filenames: false
-
-      # Validates .pre-commit-config.yaml
-      - id: validate-config
-        name: Validate Pre-Commit Config
-        entry: pre-commit validate-config
-        language: system
-        files: ^\.pre-commit-config\.yaml$
-        pass_filenames: false
-
-      - id: secret-scan
-        name: Secrets Scanner (TruffleHog)
-        entry: hooks/secret-scan.sh
-        language: script
-        pass_filenames: false
-        always_run: true
-
-      - id: commit-msg
-        name: Validate Commit Message (Local)
-        entry: hooks/commit-msg.sh
-        language: script
-        stages: [commit-msg]
-
-      - id: shell-lint
-        name: Shell Lint (Local)
-        entry: hooks/shell-lint.sh
-        language: script
-        types: [shell]
-
-      - id: yaml-xml-lint
-        name: YAML & XML Lint (Local)
-        entry: hooks/yaml-xml-lint.sh
-        language: script
-        types_or: [yaml, xml]
-
-      - id: tag-immutability-guard
-        name: Tag Immutability Guard (Local)
-        entry: hooks/tag-immutability-guard.sh
-        language: script
-        stages: [pre-push]
-        pass_filenames: false
-
-      - id: python-tests
-        name: Python Unit Tests (Local)
-        entry: hooks/python-tests.sh
-        language: script
-        pass_filenames: false
-        files: ^(hooks/.*|tests/.*|pyproject\.toml)$
+    - repo: https://github.com/bumuellp/cabumtain-hook
+      rev: v1.5.0
+      hooks:
+          - id: commit-msg
+          - id: secret-scan
+          - id: yaml-xml-lint
+          - id: trivy-config

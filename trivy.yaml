@@ -4,15 +4,19 @@
 
 # Minimum severity levels to report
 severity:
-  - CRITICAL
-  - HIGH
+    - CRITICAL
+    - HIGH
 
 # Scanners to run during filesystem scans
 scanners:
-  - vuln
-  - misconfig
-  - secret
-  - license
+    - vuln
+    - misconfig
+    - secret
+    - license
+
+# Ignorefile path
+vulnerability:
+    ignorefile: .trivyignore
 
 # Default exit code (0 = non-blocking report)
 exit-code: 0

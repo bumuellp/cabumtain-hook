@@ -1,21 +1,10 @@
-# Tooling & Caches
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Tooling and caches
 .cache/
 .pre-commit/
-.trivy/
-.agents/
-skills-lock.json
-.ruff_cache/
-
-# Python artifacts
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.venv/
-venv/
-
-# Secrets & Environment
-*.env
-*.env.*
 
 # OS and Editor files
 .DS_Store
