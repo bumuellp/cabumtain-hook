@@ -1,6 +1,7 @@
 # Project-specific documentation and metadata
 README.md
 LICENSE
+.github/CODEOWNERS
 
 # Repository-specific Git configuration
 .gitignore
