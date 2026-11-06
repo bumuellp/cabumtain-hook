@@ -29,6 +29,14 @@
   language: script
   types: [shell]
 
+- id: shell-tests
+  name: Shell Unit Tests (Bats)
+  description: Runs Bats (.bats) unit tests when shell scripts or .bats tests are present.
+  entry: hooks/shell-tests.sh
+  language: script
+  pass_filenames: false
+  files: (\.(sh|bash|bats)$)
+
 - id: ansible-lint
   name: Ansible Syntax & Lint
   description: Validates Ansible playbooks syntax and runs ansible-lint.

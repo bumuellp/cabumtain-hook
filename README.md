@@ -11,6 +11,7 @@ Modular, production-grade Git and `pre-commit` hooks for linting, secrets scanni
 | **`commit-msg`** | `commit-msg` | Validates Conventional Commit header (`feat`, `fix`, `docs`, etc. max 72 chars). | POSIX shell |
 | **`secret-scan`** | `commit` | TruffleHog credential & secrets scanner (offline local / verified CI). | `trufflehog` |
 | **`shell-lint`** | `commit` | Autoformats with `shfmt` and lints with `shellcheck`. | `shfmt`, `shellcheck` |
+| **`shell-tests`** | `commit` | Runs Bats (`.bats`) shell unit tests if `tests/` or `test/` contains `.bats` files. | `bats` (auto-bootstrapped) |
 | **`yaml-xml-lint`** | `commit` | Lints YAML with `yamllint` (ignores SOPS `.enc.yml`) and parses XML. | `yamllint`, `python3` |
 | **`python-tests`** | `commit` | Runs Python unit tests (`pytest` via `uv` or `.venv`) if `tests/` exists. | `uv` / `pytest` / `python3` |
 | **`ansible-lint`** | `commit` | Validates Ansible playbook syntax and runs `ansible-lint`. | `ansible-lint` |
