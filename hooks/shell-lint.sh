@@ -30,7 +30,11 @@ done < <(get_target_files "$@")
 
 SHFMT_CMD="$(find_tool shfmt || true)"
 if [ -n "$SHFMT_CMD" ]; then
-	"$SHFMT_CMD" -w "${shell_files[@]}"
+	if [ -f ".editorconfig" ]; then
+		"$SHFMT_CMD" -w "${shell_files[@]}"
+	else
+		"$SHFMT_CMD" -i 0 -w "${shell_files[@]}"
+	fi
 fi
 
 SHELLCHECK_CMD="$(find_tool shellcheck || true)"
