@@ -2,35 +2,35 @@
 name: Template Sync
 
 "on":
-  schedule:
-    - cron: "0 0 * * 0"
-  workflow_dispatch:
+    schedule:
+        - cron: "0 0 * * 0"
+    workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
-  actions: write
+    contents: write
+    pull-requests: write
+    actions: write
 
 jobs:
-  sync:
-    name: Sync with Upstream Template
-    if: github.repository != 'bumuellp/boilerbum'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-        with:
-          token: ${{ secrets.PAT_TEMPLATE_SYNC || secrets.GITHUB_TOKEN }}
-          persist-credentials: false
+    sync:
+        name: Sync with Upstream Template
+        if: github.repository != 'bumuellp/boilerbum'
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+              with:
+                  token: ${{ secrets.PAT_TEMPLATE_SYNC || secrets.GITHUB_TOKEN }}
+                  persist-credentials: false
 
-      - name: Sync from Upstream Template
-        uses: AndreasAugustin/actions-template-sync@6e1d0089686f8940604fc15baae62367bf6ee860 # v2.6.0
-        with:
-          source_repo_path: bumuellp/boilerbum
-          upstream_branch: main
-          pr_title: "chore(template): sync updates from upstream boilerbum"
-          pr_commit_msg: "chore(template): sync upstream changes"
-          pr_branch_name_prefix: template-sync
-          source_gh_token: ${{ secrets.PAT_TEMPLATE_SYNC || secrets.GITHUB_TOKEN }}
-          target_gh_token: ${{ secrets.PAT_TEMPLATE_SYNC || secrets.GITHUB_TOKEN }}
+            - name: Sync from Upstream Template
+              uses: AndreasAugustin/actions-template-sync@6e1d0089686f8940604fc15baae62367bf6ee860 # v2.6.0
+              with:
+                  source_repo_path: bumuellp/boilerbum
+                  upstream_branch: main
+                  pr_title: "chore(template): sync updates from upstream boilerbum"
+                  pr_commit_msg: "chore(template): sync upstream changes"
+                  pr_branch_name_prefix: template-sync
+                  source_gh_token: ${{ secrets.PAT_TEMPLATE_SYNC || secrets.GITHUB_TOKEN }}
+                  target_gh_token: ${{ secrets.PAT_TEMPLATE_SYNC || secrets.GITHUB_TOKEN }}
