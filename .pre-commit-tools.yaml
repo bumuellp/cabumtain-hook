@@ -1,0 +1,47 @@
+---
+# Declarative mise tool requirements per hook ID in .pre-commit-hooks.yaml
+secret-scan:
+  - "trufflehog@3.97.4"  # renovate: datasource=github-releases depName=trufflesecurity/trufflehog
+shell-lint:
+  - "shfmt@3.14.1"       # renovate: datasource=github-releases depName=mvdan/sh
+  - "shellcheck@0.10.0"  # renovate: datasource=github-releases depName=koalaman/shellcheck
+shell-tests:
+  - "bats@1.13.0"        # renovate: datasource=github-releases depName=bats-core/bats-core
+ansible-lint:
+  - "uv@0.13.5"          # renovate: datasource=github-releases depName=astral-sh/uv
+  - "pipx:ansible-core@2.21.4"   # renovate: datasource=pypi depName=ansible-core
+  - "pipx:ansible-lint@26.8.0"   # renovate: datasource=pypi depName=ansible-lint
+yaml-xml-lint:
+  - "uv@0.13.5"          # renovate: datasource=github-releases depName=astral-sh/uv
+  - "pipx:yamllint@1.37.1"       # renovate: datasource=pypi depName=yamllint
+docker-lint:
+  - "hadolint@2.12.0"    # renovate: datasource=github-releases depName=hadolint/hadolint
+python-tests:
+  - "uv@0.13.5"          # renovate: datasource=github-releases depName=astral-sh/uv
+  - "pipx:pytest@8.3.5"  # renovate: datasource=pypi depName=pytest
+k8s-validate:
+  - "kubeconform@0.8.0"  # renovate: datasource=github-releases depName=yannh/kubeconform
+  - "kube-score@1.20.0"  # renovate: datasource=github-releases depName=zegl/kube-score
+  - "kustomize@5.8.1"    # renovate: datasource=github-releases depName=kubernetes-sigs/kustomize
+trivy-config:
+  - "trivy@0.75.0"       # renovate: datasource=github-releases depName=aquasecurity/trivy
+trivy-fs:
+  - "trivy@0.75.0"       # renovate: datasource=github-releases depName=aquasecurity/trivy
+trivy-security:
+  - "trivy@0.75.0"       # renovate: datasource=github-releases depName=aquasecurity/trivy
+tofu-fmt:
+  - "opentofu@1.13.1"    # renovate: datasource=github-releases depName=opentofu/opentofu
+pre-commit-all:
+  - "trufflehog@3.97.4"
+  - "shfmt@3.14.1"
+  - "shellcheck@0.10.0"
+  - "bats@1.13.0"
+  - "uv@0.13.5"
+  - "pipx:yamllint@1.37.1"
+  - "hadolint@2.12.0"
+  - "pipx:pytest@8.3.5"
+  - "kubeconform@0.8.0"
+  - "kube-score@1.20.0"
+  - "kustomize@5.8.1"
+  - "trivy@0.75.0"
+  - "opentofu@1.13.1"
