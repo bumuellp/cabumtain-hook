@@ -4,19 +4,25 @@
 # ==============================================================================
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+. "$SCRIPT_DIR/utils.sh"
+
 if [ -d "tests" ]; then
     echo "=== Running Python Unit Tests ==="
-    if command -v uv >/dev/null 2>&1 && [ -f "pyproject.toml" ]; then
-        uv run pytest tests/ -q
+    UV_CMD="$(find_tool uv || true)"
+    if [ -n "$UV_CMD" ] && [ -f "pyproject.toml" ]; then
+        "$UV_CMD" run pytest tests/ -q
     elif [ -x ".venv/bin/pytest" ]; then
         .venv/bin/pytest tests/ -q
-    elif command -v pytest >/dev/null 2>&1; then
-        pytest tests/ -q
-    elif [ -x "$HOME/.local/bin/pytest" ]; then
-        "$HOME/.local/bin/pytest" tests/ -q
-    elif command -v python3 >/dev/null 2>&1; then
-        python3 -m unittest discover -s tests -v
     else
-        echo "Notice: python3 / pytest / uv not found. Skipping python unit tests."
+        PYTEST_CMD="$(find_tool pytest || true)"
+        if [ -n "$PYTEST_CMD" ]; then
+            "$PYTEST_CMD" tests/ -q
+        elif command -v python3 >/dev/null 2>&1; then
+            python3 -m unittest discover -s tests -v
+        else
+            echo "Notice: python3 / pytest / uv not found. Skipping python unit tests."
+        fi
     fi
 fi
