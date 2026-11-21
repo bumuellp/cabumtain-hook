@@ -23,6 +23,7 @@ Modular, production-grade Git and `pre-commit` hooks for linting, secrets scanni
 | **`act-integration-test`** | `pre-push`, `manual` | Runs local GitHub Actions workflow integration tests with `act` before push. | `act` (or `gh act`), Docker |
 | **`tofu-fmt`** | `commit` | Formats OpenTofu & Terraform files using `tofu fmt` (or `terraform fmt`). | `tofu` / `terraform` |
 | **`js-lint`** | `commit` | Lints JavaScript & TypeScript files using Oxlint (auto-enables `--type-aware` if `oxlint-tsgolint` is installed). | `oxlint` |
+| **`aislop`** | `commit` | Scans staged changes for AI-generated slop and placeholders (`aislop scan --staged`). | `aislop` (or `npx`) |
 | **`pre-commit-all`** | `commit` | Sequential runner executing all modular checks. | POSIX shell |
 
 

@@ -137,3 +137,10 @@
   entry: hooks/js-lint.sh
   language: script
   files: \.(js|jsx|mjs|cjs|ts|tsx|mts|cts)$
+
+- id: aislop
+  name: Catch AI Slop (aislop)
+  description: Scans staged changes for AI-generated slop, dead code, and placeholders using aislop.
+  entry: hooks/aislop.sh
+  language: script
+  pass_filenames: false

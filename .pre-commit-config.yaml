@@ -35,10 +35,9 @@ repos:
   - repo: local
     hooks:
       - id: aislop
-        name: Catch AI Slop (aislop)
-        entry: aislop scan --staged
-        language: node
-        additional_dependencies: ['aislop@^0.16.1']
+        name: Catch AI Slop (Local)
+        entry: hooks/aislop.sh
+        language: script
         pass_filenames: false
 
       # Validates .pre-commit-config.yaml
