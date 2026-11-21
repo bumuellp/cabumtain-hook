@@ -20,6 +20,7 @@ python-tests.sh
 k8s-validate.sh
 trivy-security.sh
 rust-lint.sh
+js-lint.sh
 "
 
 for check_script in $checks; do

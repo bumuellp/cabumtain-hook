@@ -130,3 +130,10 @@
   entry: hooks/rust-lint.sh
   language: script
   files: (\.rs$|Cargo\.(toml|lock)$)
+
+- id: js-lint
+  name: JS/TS Lint (Oxlint)
+  description: Lints JavaScript and TypeScript files with Oxlint (auto-enabling type-aware rules when oxlint-tsgolint is installed).
+  entry: hooks/js-lint.sh
+  language: script
+  files: \.(js|jsx|mjs|cjs|ts|tsx|mts|cts)$
