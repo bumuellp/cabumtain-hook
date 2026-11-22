@@ -9,4 +9,4 @@ name: CI
 
 jobs:
   ci:
-    uses: bumuellp/lights-camera-bum-action/.github/workflows/ci.yml@ec4b35103895d766e16059664d0625493c81a980 # v1.15.0
+    uses: bumuellp/lights-camera-bum-action/.github/workflows/ci.yml@e13ffa1fb937ece0ff0fb24c0d9b538b80c3de2e # v1.11.1
