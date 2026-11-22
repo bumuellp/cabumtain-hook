@@ -15,19 +15,19 @@ repos:
 
   # Official validator for .pre-commit-hooks.yaml manifest
   - repo: https://github.com/pre-commit/pre-commit
-    rev: v4.6.0
+    rev: v4.7.0
     hooks:
       - id: validate_manifest
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.9
+    rev: v0.17.6
     hooks:
       - id: ruff
         args: [--fix]
       - id: ruff-format
 
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 44.93.5
+    rev: 44.255.1
     hooks:
       - id: renovate-config-validator
         files: ^(renovate-config\.json|\.github/renovate\.json)$
