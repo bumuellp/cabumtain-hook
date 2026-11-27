@@ -43,7 +43,7 @@
   entry: hooks/ansible-lint.sh
   language: script
   pass_filenames: false
-  files: (^|/)ansible/.*\.(ya?ml)$
+  files: (^|/)((ansible|roles)/.*\.(ya?ml)|galaxy\.ya?ml)$
 
 - id: yaml-xml-lint
   name: YAML & XML Lint
